@@ -1,0 +1,10 @@
+Flask
+flask-socketio
+python-socketio
+opencv-python-headless
+torch         
+numpy
+eventlet 
+ultralytics
+redis
+gunicorn
