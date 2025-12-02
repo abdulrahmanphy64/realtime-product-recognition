@@ -1,5 +1,10 @@
 import os
+import sys
 import cv2
+
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(ROOT_DIR)
+
 from model_loader import ModelLoader
 
 
@@ -20,57 +25,55 @@ class Detector:
         annoted = result.plot()
         annoted_bgr = cv2.cvtColor(annoted, cv2.COLOR_RGB2BGR)
 
-        cv2.imshow("Prediction",annoted_bgr)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        base, ext = os.path.splitext(image_path)
+        output_path = f"{base}_pred{ext}"
+
+        cv2.imwrite(output_path, annoted_bgr)
+
+        return output_path
 
     def detect_video(self,video_path):
         cap = cv2.VideoCapture(video_path)
         if not cap.isOpened():
             raise ValueError("Invalid video path or unable to open video")
         
-        cv2.namedWindow('Prediction',cv2.WINDOW_NORMAL)
-        cv2.resizeWindow('Prediction',800,800)
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-        while (cap.isOpened()):
+        #Output video path
+        output_path = (
+            video_path
+            .replace(".mp4","_pred.mp4")
+            .replace(".avi","_pred.avi")
+        )
+
+        out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
+
+        while True:
             ret, frame = cap.read()
-            if ret == False:
+            if not ret:
                 break
 
+            #convert to RGB
             rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+            #YOLO prediction
             results = self.model_loader.detector(rgb_frame)
-            for result in results:
-                res = result.plot()
-                cv2.imshow("Prediction",res)
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    cap.release()
-                    cv2.destroyAllWindows()
-                    return 
+            result = results[0]
 
+            #Annoted frame
+            plotted = result.plot()
 
-    def detect_webcam(self):
-        cap = cv2.VideoCapture(0)
+            #Convert to BGR to saving
+            plotted_bgr = cv2.cvtColor(plotted, cv2.COLOR_RGB2BGR)
 
-        if not cap.isOpened():
-            raise ValueError("Could not access the webcam")
-        
-        cv2.namedWindow("Webcam Prediction",cv2.WINDOW_NORMAL)
-        cv2.resizeWindow("Webcam Prediction", 800,800)
+            out.write(plotted_bgr)
 
-        while cap.isOpened():
-            res, frame = cap.read()
-            if not res:
-                break
+        cap.release()
+        out.release()
 
-            rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            results = self.model_loader.detector(rgb_frame)
+        return output_path
 
-            for result in results:
-                plotted = result.plot()
-                cv2.imshow("Webcam Prediction", plotted)
-
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    cap.release()
-                    cv2.destroyAllWindows()
-                    return 
                 
