@@ -1,4 +1,4 @@
-##🚀 Real-Time Object Detection API (YOLOv8 + Flask)
+🚀 Real-Time Object Detection API (YOLOv8 + Flask)
 
 This project is a Flask-based REST API for performing object detection on images and videos using YOLOv8.
 It supports uploading files, running inference, and returning the processed files with bounding-box predictions.
@@ -17,34 +17,34 @@ It supports uploading files, running inference, and returning the processed file
 
 📌 API Endpoints
 1. Server Check
-    GET /ping
-    Response
-    "Server is running"
+    1. GET /ping
+    2. Response
+    3. "Server is running"
 2. Form-Data:
-    image: File (png/jpg/jpeg)
-    Respons{
+    1. image: File (png/jpg/jpeg)
+    2. Respons{
     "status": "success",
     "predicted_image": "/uploads/predictions/output.jpg"
     }
 3. Predict on Video
-    POST /predict/video
-    Form-Data:
-    video: File (mp4)
-    Response:
-    {
-    "status": "success",
-    "output_video": "/uploads/predictions/output.mp4"
-    }
+    1. POST /predict/video
+    2. Form-Data:
+        video: File (mp4)
+    3. Response:
+        {
+        "status": "success",
+        "output_video": "/uploads/predictions/output.mp4"
+        }
 4. Fetch Predicted Files
-    GET /uploads/predictions/<filename>
+    1. GET /uploads/predictions/<filename>
 
 🧪 How to Test with Postman
-    Image Prediction Test
-    POST → http://127.0.0.1:5000/predict/image
-    Body → form-data
-        Key: image
-        Type: File
-        Upload a .jpg / .png / .jpeg
+    1. Image Prediction Test
+    2. POST → http://127.0.0.1:5000/predict/image
+    3. Body → form-data
+        1. Key: image
+        2. Type: File
+        3. Upload a .jpg / .png / .jpeg
 
     Video Prediction Test
     POST → http://127.0.0.1:5000/predict/video
