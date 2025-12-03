@@ -5,7 +5,7 @@ import cv2
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(ROOT_DIR)
 
-from model_loader import ModelLoader
+from detection.model_loader import ModelLoader
 
 UPLOAD_FOLDER = os.path.join(ROOT_DIR, "uploads")
 IMAGE_UPLOAD_FOLDER = os.path.join(UPLOAD_FOLDER, "images")

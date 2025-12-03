@@ -6,3 +6,4 @@ venv/
 *.pt
 *.pth
 .DS_Store
+uploads/
